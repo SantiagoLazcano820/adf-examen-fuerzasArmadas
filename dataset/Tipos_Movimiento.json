@@ -1,0 +1,16 @@
+{
+	"name": "Tipos_Movimiento",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "dw_fuerzas_armadas",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "oltp",
+			"table": "tbl_tipos_movimiento"
+		}
+	}
+}

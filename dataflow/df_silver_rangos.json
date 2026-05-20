@@ -1,0 +1,43 @@
+{
+	"name": "df_silver_rangos",
+	"properties": {
+		"folder": {
+			"name": "bronze/silver"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "bronze_rangos",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          id_rango as string,",
+				"          nombre as string,",
+				"          categoria as string,",
+				"          nivel_jerarquico as string,",
+				"          abreviatura as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'SELECT \\n    TRIM(id_rango) AS id_rango,\\n    TRIM(nombre) AS nombre,\\n    TRIM(categoria) AS categoria,\\n    TRIM(nivel_jerarquico) AS nivel_jerarquico,\\n    TRIM(abreviatura) AS abreviatura\\nFROM bronze.tbl_rangos\\nWHERE id_rango IS NOT NULL AND TRIM(id_rango) <> \\'\\'',",
+				"     format: 'query') ~> source1",
+				"source1 derive(nivel_jerarquico = toInteger(nivel_jerarquico),",
+				"          id_rango = toInteger(id_rango),",
+				"          nombre = initCap(nombre)) ~> derivedColumn1"
+			]
+		}
+	}
+}
