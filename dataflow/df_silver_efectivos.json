@@ -1,0 +1,131 @@
+{
+	"name": "df_silver_efectivos",
+	"properties": {
+		"folder": {
+			"name": "silver"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "bronze_efectivos",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "silver_efectivos",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          id_efectivo as string,",
+				"          id_especialidad as string,",
+				"          id_unidad_actual as string,",
+				"          id_rango_actual as string,",
+				"          nombre_completo as string,",
+				"          ci as string,",
+				"          fecha_nacimiento as string,",
+				"          genero as string,",
+				"          departamento_origen as string,",
+				"          fecha_ingreso as string,",
+				"          estado as string,",
+				"          salario_mensual as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'SELECT \\n    TRIM(id_efectivo) AS id_efectivo,\\n    TRIM(id_especialidad) AS id_especialidad,\\n    TRIM(id_unidad_actual) AS id_unidad_actual,\\n    TRIM(id_rango_actual) AS id_rango_actual,\\n    TRIM(nombre) AS nombre_completo,\\n    TRIM(ci) AS ci,\\n    TRIM(fecha_nacimiento) AS fecha_nacimiento,\\n    TRIM(genero) AS genero,\\n    TRIM(departamento_origen) AS departamento_origen,\\n    TRIM(fecha_ingreso) AS fecha_ingreso,\\n    TRIM(estado) AS estado,\\n    TRIM(salario_monthly) AS salario_mensual\\nFROM bronze.tbl_efectivos\\nWHERE id_efectivo IS NOT NULL AND TRIM(id_efectivo) <> \\'\\'',",
+				"     format: 'query') ~> source1",
+				"source1 derive(id_efectivo = toInteger(id_efectivo),",
+				"          id_especialidad = toInteger(id_especialidad),",
+				"          id_unidad_actual = toInteger(id_unidad_actual),",
+				"          id_rango_actual = toInteger(id_rango_actual),",
+				"          fecha_nacimiento = coalesce (",
+				"    toDate(fecha_nacimiento, 'yyyy-MM-dd'),",
+				"    toDate(fecha_nacimiento, 'dd/MM/yyyy'),",
+				"    toDate(fecha_nacimiento, 'MM-dd-yyyy'),",
+				"    toDate(fecha_nacimiento, 'yyyy/MM/dd'),",
+				"    toDate(fecha_nacimiento, 'dd-MMM-yyyy'),",
+				"    toDate(fecha_nacimiento, 'MMMM dd, yyyy'),",
+				"    toDate(fecha_nacimiento, \"dd 'de' MMMM 'de' yyyy\"),",
+				"    toDate('1900-01-01', 'yyyy-MM-dd')",
+				"),",
+				"          fecha_ingreso = coalesce (",
+				"    toDate(fecha_ingreso, 'yyyy-MM-dd'),",
+				"    toDate(fecha_ingreso, 'dd/MM/yyyy'),",
+				"    toDate(fecha_ingreso, 'MM-dd-yyyy'),",
+				"    toDate(fecha_ingreso, 'yyyy/MM/dd'),",
+				"    toDate(fecha_ingreso, 'dd-MMM-yyyy'),",
+				"    toDate(fecha_ingreso, 'MMMM dd, yyyy'),",
+				"    toDate(fecha_ingreso, \"dd 'de' MMMM 'de' yyyy\"),",
+				"    toDate('1900-01-01', 'yyyy-MM-dd')",
+				"),",
+				"          ci = regexReplace(trim(ci), '[^0-9]', ''),",
+				"          genero = iif(regexMatch(upper(trim(genero)), '^(MASCULINO|HOMBRE|MASC\\\\.|M)$'), 'Masculino',  iif(regexMatch(upper(trim(genero)), '^(FEMENINO|FEM|F|MUJER)$'), 'Femenino', 'No Identificado')),",
+				"          departamento_origen = iif(regexMatch(upper(trim(departamento_origen)), '^(LA PAZ|L\\\\.P\\\\.|LP|LAPAZ)$'), 'La Paz',",
+				"iif(regexMatch(upper(trim(departamento_origen)), '^(CBBA|CBBA\\\\.|COCHABAMBA)$'), 'Cochabamba',",
+				"iif(regexMatch(upper(trim(departamento_origen)), '^(OR|OR\\\\.|ORURO)$'), 'Oruro',",
+				"iif(regexMatch(upper(trim(departamento_origen)), '^(TJ|TARIJA)$'), 'Tarija',",
+				"iif(regexMatch(upper(trim(departamento_origen)), '^(STA CRUZ|STA\\\\.\\\\s*CRUZ|SC|SCZ|SANTA CRUZ)$'), 'Santa Cruz',",
+				"iif(regexMatch(upper(trim(departamento_origen)), '^(PT|POTOSI)$'), 'Potosí',",
+				"iif(regexMatch(upper(trim(departamento_origen)), '^(BN|BN\\\\.|BENI)$'), 'Beni',",
+				"iif(regexMatch(upper(trim(departamento_origen)), '^(PN|PANDO)$'), 'Pando', trim(departamento_origen))))))))),",
+				"          estado = iif(regexMatch(upper(trim(estado)), '^(ACTIVO|ACTIVO\\\\.|ACT|ACTV|A|EN ACTIVIDAD)$'), 'Activo', iif(regexMatch(upper(trim(estado)), '^(BAJA|BJA|DADO DE BAJA)$'), 'Baja', iif(regexMatch(upper(trim(estado)), '^(RESERVA|RSV|EN RESERVA)$'), 'Reserva', 'Otros'))),",
+				"          salario_mensual = toDecimal(regexReplace(regexReplace(trim(salario_mensual), '(?i)(BS\\\\.-|BS\\\\.|BS|\\\\s+)', ''), ',', ''), 18, 2),",
+				"          nombre_completo = initCap(nombre_completo)) ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          id_efectivo as integer,",
+				"          id_especialidad as integer,",
+				"          id_unidad_actual as integer,",
+				"          id_rango_actual as integer,",
+				"          nombre_completo as string,",
+				"          ci as string,",
+				"          fecha_nacimiento as date,",
+				"          genero as string,",
+				"          departamento_origen as string,",
+				"          fecha_ingreso as date,",
+				"          estado as string,",
+				"          salario_mensual as decimal(18,2),",
+				"          fecha_carga as timestamp",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          id_efectivo,",
+				"          id_especialidad,",
+				"          id_unidad_actual,",
+				"          id_rango_actual,",
+				"          nombre_completo,",
+				"          ci,",
+				"          fecha_nacimiento,",
+				"          genero = ci,",
+				"          departamento_origen,",
+				"          fecha_ingreso,",
+				"          estado,",
+				"          salario_mensual",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

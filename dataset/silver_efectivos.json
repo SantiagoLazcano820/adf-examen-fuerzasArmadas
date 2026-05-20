@@ -66,11 +66,6 @@
 				"scale": 2
 			},
 			{
-				"name": "antiguedad_servicio_anios",
-				"type": "int",
-				"precision": 10
-			},
-			{
 				"name": "fecha_carga",
 				"type": "datetime",
 				"precision": 23,

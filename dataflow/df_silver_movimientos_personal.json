@@ -1,0 +1,105 @@
+{
+	"name": "df_silver_movimientos_personal",
+	"properties": {
+		"folder": {
+			"name": "silver"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "bronze_movimientos_personal",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "silver_movimientos_personal",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          id_movimiento as string,",
+				"          id_efectivo as string,",
+				"          id_unidad_destino as string,",
+				"          id_rango as string,",
+				"          id_tipo_movimiento as string,",
+				"          nombre_movimiento as string,",
+				"          descripcion_movimiento as string,",
+				"          fecha_movimiento as string,",
+				"          antiguedad_anios as string,",
+				"          salario_mensual as string,",
+				"          observaciones as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'SELECT \\n    TRIM(M.id_movimiento) AS id_movimiento,\\n    TRIM(M.id_efectivo) AS id_efectivo,\\n    TRIM(M.id_unidad_destino) AS id_unidad_destino,\\n    TRIM(M.id_rango) AS id_rango,\\n    TRIM(M.id_tipo) AS id_tipo_movimiento,\\n    TRIM(T.nombre) AS nombre_movimiento,         \\n    TRIM(T.descripcion) AS descripcion_movimiento, \\n    TRIM(M.fecha_movimiento) AS fecha_movimiento,\\n    TRIM(M.antiguedad_anios) AS antiguedad_anios,\\n    TRIM(M.salario_mensual) AS salario_mensual,\\n    TRIM(M.observaciones) AS observaciones\\nFROM bronze.tbl_movimientos_personal M\\nLEFT JOIN bronze.tbl_tipos_movimiento T ON TRIM(M.id_tipo) = TRIM(T.id_tipo)\\nWHERE M.id_movimiento IS NOT NULL AND TRIM(M.id_movimiento) <> \\'\\'',",
+				"     format: 'query') ~> source1",
+				"source1 derive(id_movimiento = iif(regexMatch(trim(id_movimiento), '^\\\\d+$'), toInteger(trim(id_movimiento)), toInteger(null())),",
+				"          id_efectivo = toInteger(id_efectivo),",
+				"          id_unidad_destino = toInteger(id_unidad_destino),",
+				"          id_rango = toInteger(id_rango),",
+				"          id_tipo_movimiento = toInteger(id_tipo_movimiento),",
+				"          fecha_movimiento = coalesce (",
+				"    toDate(fecha_movimiento, 'yyyy-MM-dd'),",
+				"    toDate(fecha_movimiento, 'dd/MM/yyyy'),",
+				"    toDate(fecha_movimiento, 'MM-dd-yyyy'),",
+				"    toDate(fecha_movimiento, 'yyyy/MM/dd'),",
+				"    toDate(fecha_movimiento, 'dd-MMM-yyyy'),",
+				"    toDate(fecha_movimiento, 'MMMM dd, yyyy'),",
+				"    toDate(fecha_movimiento, \"dd 'de' MMMM 'de' yyyy\"),",
+				"    toDate('1900-01-01', 'yyyy-MM-dd')",
+				"),",
+				"          columna6 = ERROR_FUNCTION(''),",
+				"          columna7 = ERROR_FUNCTION('')) ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          id_movimiento as integer,",
+				"          id_efectivo as integer,",
+				"          id_unidad_destino as integer,",
+				"          id_rango as integer,",
+				"          id_tipo_movimiento as integer,",
+				"          nombre_movimiento as string,",
+				"          descripcion_movimiento as string,",
+				"          fecha_movimiento as timestamp,",
+				"          antiguedad_anios as integer,",
+				"          salario_mensual as decimal(18,2),",
+				"          observaciones as string,",
+				"          fecha_carga as timestamp",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          id_movimiento,",
+				"          id_efectivo,",
+				"          id_unidad_destino,",
+				"          id_rango,",
+				"          id_tipo_movimiento,",
+				"          nombre_movimiento,",
+				"          descripcion_movimiento,",
+				"          observaciones",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}
