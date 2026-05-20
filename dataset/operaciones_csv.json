@@ -1,0 +1,23 @@
+{
+	"name": "operaciones_csv",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "datalake_fuerzasArmadas",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "operaciones_csv",
+				"container": "bronze"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
