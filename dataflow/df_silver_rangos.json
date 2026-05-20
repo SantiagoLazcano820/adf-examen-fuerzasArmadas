@@ -2,7 +2,7 @@
 	"name": "df_silver_rangos",
 	"properties": {
 		"folder": {
-			"name": "bronze/silver"
+			"name": "silver"
 		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -17,6 +17,10 @@
 			],
 			"sinks": [
 				{
+					"dataset": {
+						"referenceName": "silver_rangos",
+						"type": "DatasetReference"
+					},
 					"name": "sink1"
 				}
 			],
@@ -43,8 +47,29 @@
 				"          nombre = initCap(nombre)) ~> derivedColumn1",
 				"derivedColumn1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     input(",
+				"          id_rango as integer,",
+				"          nombre as string,",
+				"          categoria as string,",
+				"          nivel_jerarquico as integer,",
+				"          abreviatura as string,",
+				"          fecha_carga as timestamp",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink1"
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          id_rango,",
+				"          nombre,",
+				"          categoria,",
+				"          nivel_jerarquico,",
+				"          abreviatura",
+				"     )) ~> sink1"
 			]
 		}
 	}
