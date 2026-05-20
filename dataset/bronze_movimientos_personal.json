@@ -2,7 +2,7 @@
 	"name": "bronze_movimientos_personal",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "dw_fuerzas_armadas",
+			"referenceName": "dw_fuerzas_armadas_propio",
 			"type": "LinkedServiceReference"
 		},
 		"folder": {
@@ -13,28 +13,23 @@
 		"schema": [
 			{
 				"name": "id_movimiento",
-				"type": "int",
-				"precision": 10
+				"type": "varchar"
 			},
 			{
 				"name": "id_efectivo",
-				"type": "int",
-				"precision": 10
+				"type": "varchar"
 			},
 			{
 				"name": "id_unidad_destino",
-				"type": "int",
-				"precision": 10
+				"type": "varchar"
 			},
 			{
 				"name": "id_rango",
-				"type": "int",
-				"precision": 10
+				"type": "varchar"
 			},
 			{
 				"name": "id_tipo",
-				"type": "int",
-				"precision": 10
+				"type": "varchar"
 			},
 			{
 				"name": "fecha_movimiento",
@@ -50,11 +45,11 @@
 			},
 			{
 				"name": "observaciones",
-				"type": "nvarchar"
+				"type": "varchar"
 			}
 		],
 		"typeProperties": {
-			"schema": "oltp",
+			"schema": "bronze",
 			"table": "tbl_movimientos_personal"
 		}
 	}

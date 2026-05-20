@@ -2,7 +2,7 @@
 	"name": "bronze_especialidades",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "dw_fuerzas_armadas",
+			"referenceName": "dw_fuerzas_armadas_propio",
 			"type": "LinkedServiceReference"
 		},
 		"folder": {
@@ -13,12 +13,11 @@
 		"schema": [
 			{
 				"name": "id_especialidad",
-				"type": "int",
-				"precision": 10
+				"type": "varchar"
 			},
 			{
 				"name": "nombre",
-				"type": "nvarchar"
+				"type": "varchar"
 			},
 			{
 				"name": "area",
@@ -26,7 +25,7 @@
 			}
 		],
 		"typeProperties": {
-			"schema": "oltp",
+			"schema": "bronze",
 			"table": "tbl_especialidades"
 		}
 	}

@@ -2,7 +2,7 @@
 	"name": "bronze_efectivos",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "dw_fuerzas_armadas",
+			"referenceName": "dw_fuerzas_armadas_propio",
 			"type": "LinkedServiceReference"
 		},
 		"folder": {
@@ -13,27 +13,23 @@
 		"schema": [
 			{
 				"name": "id_efectivo",
-				"type": "int",
-				"precision": 10
+				"type": "varchar"
 			},
 			{
 				"name": "id_especialidad",
-				"type": "int",
-				"precision": 10
+				"type": "varchar"
 			},
 			{
 				"name": "id_unidad_actual",
-				"type": "int",
-				"precision": 10
+				"type": "varchar"
 			},
 			{
 				"name": "id_rango_actual",
-				"type": "int",
-				"precision": 10
+				"type": "varchar"
 			},
 			{
 				"name": "nombre",
-				"type": "nvarchar"
+				"type": "varchar"
 			},
 			{
 				"name": "ci",
@@ -49,7 +45,7 @@
 			},
 			{
 				"name": "departamento_origen",
-				"type": "nvarchar"
+				"type": "varchar"
 			},
 			{
 				"name": "fecha_ingreso",
@@ -60,12 +56,12 @@
 				"type": "varchar"
 			},
 			{
-				"name": "salario_mensual",
+				"name": "salario_monthly",
 				"type": "varchar"
 			}
 		],
 		"typeProperties": {
-			"schema": "oltp",
+			"schema": "bronze",
 			"table": "tbl_efectivos"
 		}
 	}

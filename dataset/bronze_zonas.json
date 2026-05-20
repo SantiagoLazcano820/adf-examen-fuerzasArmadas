@@ -2,7 +2,7 @@
 	"name": "bronze_zonas",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "dw_fuerzas_armadas",
+			"referenceName": "dw_fuerzas_armadas_propio",
 			"type": "LinkedServiceReference"
 		},
 		"folder": {
@@ -13,20 +13,19 @@
 		"schema": [
 			{
 				"name": "id_zona",
-				"type": "int",
-				"precision": 10
+				"type": "varchar"
 			},
 			{
 				"name": "nombre",
-				"type": "nvarchar"
+				"type": "varchar"
 			},
 			{
 				"name": "departamento",
-				"type": "nvarchar"
+				"type": "varchar"
 			},
 			{
 				"name": "frontera_con",
-				"type": "nvarchar"
+				"type": "varchar"
 			},
 			{
 				"name": "tipo_terreno",
@@ -34,8 +33,7 @@
 			},
 			{
 				"name": "altitud_msnm",
-				"type": "int",
-				"precision": 10
+				"type": "varchar"
 			},
 			{
 				"name": "nivel_riesgo",
@@ -43,11 +41,11 @@
 			},
 			{
 				"name": "acceso_carretero",
-				"type": "bit"
+				"type": "varchar"
 			}
 		],
 		"typeProperties": {
-			"schema": "oltp",
+			"schema": "bronze",
 			"table": "tbl_zonas"
 		}
 	}

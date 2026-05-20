@@ -2,7 +2,7 @@
 	"name": "bronze_estrucutra_organizacional",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "dw_fuerzas_armadas",
+			"referenceName": "dw_fuerzas_armadas_propio",
 			"type": "LinkedServiceReference"
 		},
 		"folder": {
@@ -13,13 +13,11 @@
 		"schema": [
 			{
 				"name": "id_estructura",
-				"type": "int",
-				"precision": 10
+				"type": "varchar"
 			},
 			{
 				"name": "id_padre",
-				"type": "int",
-				"precision": 10
+				"type": "varchar"
 			},
 			{
 				"name": "nivel",
@@ -27,7 +25,7 @@
 			},
 			{
 				"name": "nombre",
-				"type": "nvarchar"
+				"type": "varchar"
 			},
 			{
 				"name": "sigla",
@@ -39,11 +37,11 @@
 			},
 			{
 				"name": "cobertura_departamentos",
-				"type": "nvarchar"
+				"type": "varchar"
 			}
 		],
 		"typeProperties": {
-			"schema": "oltp",
+			"schema": "bronze",
 			"table": "tbl_estructura_organizacional"
 		}
 	}

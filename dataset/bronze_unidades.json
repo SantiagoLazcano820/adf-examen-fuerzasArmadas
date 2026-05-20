@@ -2,7 +2,7 @@
 	"name": "bronze_unidades",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "dw_fuerzas_armadas",
+			"referenceName": "dw_fuerzas_armadas_propio",
 			"type": "LinkedServiceReference"
 		},
 		"folder": {
@@ -12,18 +12,16 @@
 		"type": "AzureSqlTable",
 		"schema": [
 			{
-				"name": "id_unidad",
-				"type": "int",
-				"precision": 10
+				"name": "id_unit",
+				"type": "varchar"
 			},
 			{
 				"name": "id_brigada",
-				"type": "int",
-				"precision": 10
+				"type": "varchar"
 			},
 			{
 				"name": "nombre",
-				"type": "nvarchar"
+				"type": "varchar"
 			},
 			{
 				"name": "codigo",
@@ -31,11 +29,11 @@
 			},
 			{
 				"name": "ciudad",
-				"type": "nvarchar"
+				"type": "varchar"
 			},
 			{
 				"name": "departamento",
-				"type": "nvarchar"
+				"type": "varchar"
 			},
 			{
 				"name": "tipo_cuartel",
@@ -43,7 +41,7 @@
 			}
 		],
 		"typeProperties": {
-			"schema": "oltp",
+			"schema": "bronze",
 			"table": "tbl_unidades"
 		}
 	}
