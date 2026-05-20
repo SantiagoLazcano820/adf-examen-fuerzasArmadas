@@ -5,6 +5,9 @@
 			"referenceName": "datalake_fuerzasArmadas",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "bronze"
+		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
@@ -18,6 +21,43 @@
 			"firstRowAsHeader": true,
 			"quoteChar": "\""
 		},
-		"schema": []
+		"schema": [
+			{
+				"name": "id_movimiento",
+				"type": "String"
+			},
+			{
+				"name": "id_efectivo",
+				"type": "String"
+			},
+			{
+				"name": "id_unidad_destino",
+				"type": "String"
+			},
+			{
+				"name": "id_rango",
+				"type": "String"
+			},
+			{
+				"name": "id_tipo",
+				"type": "String"
+			},
+			{
+				"name": "fecha_movimiento",
+				"type": "String"
+			},
+			{
+				"name": "antiguedad_anios",
+				"type": "String"
+			},
+			{
+				"name": "salario_mensual",
+				"type": "String"
+			},
+			{
+				"name": "observaciones",
+				"type": "String"
+			}
+		]
 	}
 }

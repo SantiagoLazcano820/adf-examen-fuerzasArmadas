@@ -5,6 +5,9 @@
 			"referenceName": "datalake_fuerzasArmadas",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "bronze"
+		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
@@ -18,6 +21,19 @@
 			"firstRowAsHeader": true,
 			"quoteChar": "\""
 		},
-		"schema": []
+		"schema": [
+			{
+				"name": "id_especialidad",
+				"type": "String"
+			},
+			{
+				"name": "nombre",
+				"type": "String"
+			},
+			{
+				"name": "area",
+				"type": "String"
+			}
+		]
 	}
 }

@@ -5,6 +5,9 @@
 			"referenceName": "datalake_fuerzasArmadas",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "bronze"
+		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
@@ -18,6 +21,27 @@
 			"firstRowAsHeader": true,
 			"quoteChar": "\""
 		},
-		"schema": []
+		"schema": [
+			{
+				"name": "id_rango",
+				"type": "String"
+			},
+			{
+				"name": "nombre",
+				"type": "String"
+			},
+			{
+				"name": "categoria",
+				"type": "String"
+			},
+			{
+				"name": "nivel_jerarquico",
+				"type": "String"
+			},
+			{
+				"name": "abreviatura",
+				"type": "String"
+			}
+		]
 	}
 }
