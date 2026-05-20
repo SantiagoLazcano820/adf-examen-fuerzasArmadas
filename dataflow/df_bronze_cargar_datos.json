@@ -150,38 +150,7 @@
 					"name": "sink10"
 				}
 			],
-			"transformations": [
-				{
-					"name": "derivedColumn1"
-				},
-				{
-					"name": "derivedColumn2"
-				},
-				{
-					"name": "derivedColumn3"
-				},
-				{
-					"name": "derivedColumn4"
-				},
-				{
-					"name": "derivedColumn5"
-				},
-				{
-					"name": "derivedColumn6"
-				},
-				{
-					"name": "derivedColumn7"
-				},
-				{
-					"name": "derivedColumn8"
-				},
-				{
-					"name": "derivedColumn9"
-				},
-				{
-					"name": "derivedColumn10"
-				}
-			],
+			"transformations": [],
 			"scriptLines": [
 				"source(output(",
 				"          id_efectivo as string,",
@@ -306,33 +275,7 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> source10",
-				"source1 derive(id_efectivo = toInteger(id_efectivo),",
-				"          id_especialidad = toInteger(id_especialidad),",
-				"          id_unidad_actual = toInteger(id_unidad_actual),",
-				"          id_rango_actual = toInteger(id_rango_actual)) ~> derivedColumn1",
-				"source2 derive(id_especialidad = toInteger(id_especialidad)) ~> derivedColumn2",
-				"source3 derive(id_estructura = toInteger(id_estructura),",
-				"          id_padre = toInteger(id_padre)) ~> derivedColumn3",
-				"source4 derive(id_movimiento = toInteger(id_movimiento),",
-				"          id_efectivo = toInteger(id_efectivo),",
-				"          id_unidad_destino = toInteger(id_unidad_destino),",
-				"          id_rango = toInteger(id_rango),",
-				"          id_tipo = toInteger(id_tipo)) ~> derivedColumn4",
-				"source5 derive(id_operacion =  toInteger(id_operacion),",
-				"          id_tipo = toInteger(id_tipo),",
-				"          id_unidad_resp = toInteger(id_unidad_resp),",
-				"          id_zona = toInteger(id_zona)) ~> derivedColumn5",
-				"source6 derive(id_rango = toInteger(id_rango),",
-				"          nivel_jerarquico = toInteger(nivel_jerarquico)) ~> derivedColumn6",
-				"source7 derive(id_tipo = toInteger(id_tipo)) ~> derivedColumn7",
-				"source8 derive(id_tipo = toInteger(id_tipo)) ~> derivedColumn8",
-				"source9 derive(id_unidad = toInteger(id_unidad),",
-				"          id_brigada = toInteger(id_brigada)) ~> derivedColumn9",
-				"source10 derive(id_zona = toInteger(id_zona),",
-				"          altitud_msnm = toInteger(altitud_msnm),",
-				"          acceso_carretero = iif(",
-				"    in(['si', 'true', '1', 'yes'], lower(trim(toString(acceso_carretero)))), true(), false())) ~> derivedColumn10",
-				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"source1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          id_efectivo as string,",
@@ -368,9 +311,9 @@
 				"          departamento_origen,",
 				"          fecha_ingreso,",
 				"          estado,",
-				"          salario_mensual",
+				"          salario_monthly = salario_mensual",
 				"     )) ~> sink1",
-				"derivedColumn2 sink(allowSchemaDrift: true,",
+				"source2 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          id_especialidad as string,",
@@ -390,7 +333,7 @@
 				"          nombre,",
 				"          area",
 				"     )) ~> sink2",
-				"derivedColumn3 sink(allowSchemaDrift: true,",
+				"source3 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          id_estructura as string,",
@@ -418,7 +361,7 @@
 				"          tipo,",
 				"          cobertura_departamentos",
 				"     )) ~> sink3",
-				"derivedColumn4 sink(allowSchemaDrift: true,",
+				"source4 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          id_movimiento as string,",
@@ -450,7 +393,7 @@
 				"          salario_mensual,",
 				"          observaciones",
 				"     )) ~> sink4",
-				"derivedColumn5 sink(allowSchemaDrift: true,",
+				"source5 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          id_operacion as string,",
@@ -496,7 +439,7 @@
 				"          incidentes,",
 				"          observaciones",
 				"     )) ~> sink5",
-				"derivedColumn6 sink(allowSchemaDrift: true,",
+				"source6 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          id_rango as string,",
@@ -520,7 +463,7 @@
 				"          nivel_jerarquico,",
 				"          abreviatura",
 				"     )) ~> sink6",
-				"derivedColumn7 sink(allowSchemaDrift: true,",
+				"source7 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          id_tipo as string,",
@@ -540,7 +483,7 @@
 				"          nombre,",
 				"          descripcion",
 				"     )) ~> sink7",
-				"derivedColumn8 sink(allowSchemaDrift: true,",
+				"source8 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          id_tipo as string,",
@@ -560,7 +503,7 @@
 				"          nombre,",
 				"          categoria",
 				"     )) ~> sink8",
-				"derivedColumn9 sink(allowSchemaDrift: true,",
+				"source9 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          id_unit as string,",
@@ -580,7 +523,7 @@
 				"     skipDuplicateMapOutputs: true,",
 				"     errorHandlingOption: 'stopOnFirstError',",
 				"     mapColumn(",
-				"          id_unidad,",
+				"          id_unit = id_unidad,",
 				"          id_brigada,",
 				"          nombre,",
 				"          codigo,",
@@ -588,7 +531,7 @@
 				"          departamento,",
 				"          tipo_cuartel",
 				"     )) ~> sink9",
-				"derivedColumn10 sink(allowSchemaDrift: true,",
+				"source10 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          id_zona as string,",
