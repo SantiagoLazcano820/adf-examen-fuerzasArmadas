@@ -8,14 +8,126 @@
 		"typeProperties": {
 			"sources": [
 				{
+					"dataset": {
+						"referenceName": "bronze_operaciones",
+						"type": "DatasetReference"
+					},
 					"name": "source1"
 				}
 			],
-			"sinks": [],
-			"transformations": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "silver_operaciones",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "filter1"
+				}
+			],
 			"scriptLines": [
-				"source(allowSchemaDrift: true,",
-				"     validateSchema: false) ~> source1"
+				"source(output(",
+				"          id_operacion as string,",
+				"          id_tipo_operacion as string,",
+				"          categoria_operacion as string,",
+				"          nombre_tipo_operacion as string,",
+				"          id_unidad_resp as string,",
+				"          id_zona as string,",
+				"          nombre_operacion as string,",
+				"          fecha_inicio as string,",
+				"          fecha_fin as string,",
+				"          duracion_dias as string,",
+				"          efectivos_desplegados as string,",
+				"          vehiculos_utilizados as string,",
+				"          costo_operacion as string,",
+				"          resultado as string,",
+				"          detenidos as string,",
+				"          area_km2 as string,",
+				"          incidentes as string,",
+				"          observaciones as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'SELECT \\n    TRIM(O.id_operacion) AS id_operacion,\\n    TRIM(O.id_tipo) AS id_tipo_operacion,\\n    TRIM(T.categoria) AS categoria_operacion,    \\n    TRIM(T.nombre) AS nombre_tipo_operacion,      \\n    TRIM(O.id_unidad_resp) AS id_unidad_resp,\\n    TRIM(O.id_zona) AS id_zona,\\n    TRIM(O.nombre_operacion) AS nombre_operacion,\\n    TRIM(O.fecha_inicio) AS fecha_inicio,\\n    TRIM(O.fecha_fin) AS fecha_fin,\\n    TRIM(O.duracion_dias) AS duracion_dias,\\n    TRIM(O.efectivos_desplegados) AS efectivos_desplegados,\\n    TRIM(O.vehiculos_utilizados) AS vehiculos_utilizados,\\n    TRIM(O.costo_operacion) AS costo_operacion,\\n    TRIM(O.resultado) AS resultado,\\n    TRIM(O.detenidos) AS detenidos,\\n    TRIM(O.area_km2) AS area_km2,\\n    TRIM(O.incidentes) AS incidentes,\\n    TRIM(O.observaciones) AS observaciones\\nFROM bronze.tbl_operaciones O\\nLEFT JOIN bronze.tbl_tipos_operacion T ON TRIM(O.id_tipo) = TRIM(T.id_tipo)\\nWHERE O.id_operacion IS NOT NULL AND TRIM(O.id_operacion) <> \\'\\'',",
+				"     format: 'query') ~> source1",
+				"source1 derive(id_operacion = iif(regexMatch(trim(id_operacion), '^\\\\d+$'), toInteger(trim(id_operacion)), toInteger(null())),",
+				"          id_tipo_operacion = toInteger(id_tipo_operacion),",
+				"          id_unidad_resp = toInteger(id_unidad_resp),",
+				"          id_zona = toInteger(id_zona),",
+				"          fecha_inicio = coalesce(     toTimestamp(trim(fecha_inicio), 'yyyy-MM-dd'),     toTimestamp(trim(fecha_inicio), 'dd-MM-yyyy'),     toTimestamp(trim(fecha_inicio), 'yyyy/MM/dd'),     toTimestamp(trim(fecha_inicio), 'dd/MM/yyyy'),     toTimestamp(trim(fecha_inicio), 'MM-dd-yyyy'),     toTimestamp(trim(fecha_inicio), 'yyyyMMdd'),     toTimestamp('1900-01-01 00:00:00', 'yyyy-MM-dd HH:mm:ss') ),",
+				"          fecha_fin = coalesce(     toTimestamp(trim(fecha_fin), 'yyyy-MM-dd'),     toTimestamp(trim(fecha_fin), 'dd-MM-yyyy'),     toTimestamp(trim(fecha_fin), 'yyyy/MM/dd'),     toTimestamp(trim(fecha_fin), 'dd/MM/yyyy'),     toTimestamp(trim(fecha_fin), 'MM-dd-yyyy'),     toTimestamp(trim(fecha_fin), 'yyyyMMdd'),     toTimestamp('1900-01-01 00:00:00', 'yyyy-MM-dd HH:mm:ss') ),",
+				"          costo_operacion = toDecimal(regexReplace(regexReplace(trim(costo_operacion), '(?i)(BS\\\\.-|BS\\\\.|BS|\\\\s+)', ''), ',', ''), 18, 2),",
+				"          duracion_dias = iif(regexMatch(upper(trim(duracion_dias)), '^(SIETE)$'), 7, iif(regexMatch(upper(trim(duracion_dias)), '^(OCHO)$'), 8, iif(regexMatch(upper(trim(duracion_dias)), '^(TRECE)$'), 13, iif(regexMatch(upper(trim(duracion_dias)), '^(DIECISÉIS)$'), 16, iif(regexMatch(upper(trim(duracion_dias)), '^(VEINTE)$'), 20, toInteger(round(toDecimal(regexExtract(replace(trim(duracion_dias), ',', '.'), '(\\\\d+(\\\\.\\\\d+)?)', 1), 18, 2))) ))))),",
+				"          efectivos_desplegados = iif(regexMatch(upper(trim(efectivos_desplegados)), '^(CINCUENTA)$'), 50, iif(regexMatch(upper(trim(efectivos_desplegados)), '^(CIEN)$'), 100, iif(regexMatch(upper(trim(efectivos_desplegados)), '^(CIENTO CINCUENTA)$'), 150, iif(regexMatch(upper(trim(efectivos_desplegados)), '^(TRESCIENTOS)$'), 300, toInteger(regexExtract(trim(efectivos_desplegados), '\\\\d+', 0)) )))),",
+				"          vehiculos_utilizados = iif(regexMatch(upper(trim(vehiculos_utilizados)), '^(DIECISÉIS)$'), 16, iif(regexMatch(upper(trim(vehiculos_utilizados)), '^(VEINTICINCO)$'), 25, toInteger(regexExtract(trim(vehiculos_utilizados), '\\\\d+', 0)) )),",
+				"          detenidos = iif(regexMatch(upper(trim(detenidos)), '^(CERO|NINGUNO|SIN DETENIDOS|NINGUN|S/D|-)$') || isNull(detenidos), 0, iif(regexMatch(upper(trim(detenidos)), '^(UNO)$'), 1, iif(regexMatch(upper(trim(detenidos)), '^(VEINTE)$'), 20, toInteger(regexExtract(trim(detenidos), '\\\\d+', 0)) ))),",
+				"          area_km2 = iif(regexMatch(trim(area_km2), '^(NULL|-)$') || isNull(area_km2), toDecimal(null(), 18, 2), toDecimal(regexExtract(replace(trim(area_km2), ',', '.'), '(\\\\d+(\\\\.\\\\d+)?)', 1), 18, 2) ),",
+				"          resultado = iif(trim(resultado) == '-' || isNull(resultado), toString(null()), upper(trim(resultado))),",
+				"          categoria_operacion = initCap(categoria_operacion),",
+				"          nombre_tipo_operacion = initCap(nombre_tipo_operacion),",
+				"          nombre_operacion = initCap(nombre_operacion),",
+				"          observaciones = initCap(observaciones),",
+				"          incidentes = iif(regexMatch(upper(trim(incidentes)), '^(SIN INCIDENTES|S/N|S/D|-)$') || isNull(incidentes), '0', iif(regexMatch(upper(trim(incidentes)), '^(OCHOS/N)$'), '8', toString(toInteger(regexExtract(trim(incidentes), '\\\\d+', 0))) ))) ~> derivedColumn1",
+				"derivedColumn1 filter(!isNull(id_operacion)) ~> filter1",
+				"filter1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          id_operacion as integer,",
+				"          id_tipo_operacion as integer,",
+				"          categoria_operacion as string,",
+				"          nombre_tipo_operacion as string,",
+				"          id_unidad_resp as integer,",
+				"          id_zona as integer,",
+				"          nombre_operacion as string,",
+				"          fecha_inicio as timestamp,",
+				"          fecha_fin as timestamp,",
+				"          duracion_dias as integer,",
+				"          efectivos_desplegados as integer,",
+				"          vehiculos_utilizados as integer,",
+				"          costo_operacion as decimal(18,2),",
+				"          resultado as string,",
+				"          detenidos as integer,",
+				"          area_km2 as decimal(18,2),",
+				"          incidentes as string,",
+				"          observaciones as string,",
+				"          fecha_carga as timestamp",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          id_operacion,",
+				"          id_tipo_operacion,",
+				"          categoria_operacion,",
+				"          nombre_tipo_operacion,",
+				"          id_unidad_resp,",
+				"          id_zona,",
+				"          nombre_operacion,",
+				"          fecha_inicio,",
+				"          fecha_fin,",
+				"          duracion_dias,",
+				"          efectivos_desplegados,",
+				"          vehiculos_utilizados,",
+				"          costo_operacion,",
+				"          resultado,",
+				"          detenidos,",
+				"          area_km2,",
+				"          incidentes,",
+				"          observaciones",
+				"     )) ~> sink1"
 			]
 		}
 	}
