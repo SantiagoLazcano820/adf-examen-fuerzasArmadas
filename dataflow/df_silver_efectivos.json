@@ -27,6 +27,9 @@
 			"transformations": [
 				{
 					"name": "derivedColumn1"
+				},
+				{
+					"name": "filter1"
 				}
 			],
 			"scriptLines": [
@@ -86,7 +89,8 @@
 				"          estado = iif(regexMatch(upper(trim(estado)), '^(ACTIVO|ACTIVO\\\\.|ACT|ACTV|A|EN ACTIVIDAD)$'), 'Activo', iif(regexMatch(upper(trim(estado)), '^(BAJA|BJA|DADO DE BAJA)$'), 'Baja', iif(regexMatch(upper(trim(estado)), '^(RESERVA|RSV|EN RESERVA)$'), 'Reserva', 'Otros'))),",
 				"          salario_mensual = toDecimal(regexReplace(regexReplace(trim(salario_mensual), '(?i)(BS\\\\.-|BS\\\\.|BS|\\\\s+)', ''), ',', ''), 18, 2),",
 				"          nombre_completo = initCap(nombre_completo)) ~> derivedColumn1",
-				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"derivedColumn1 filter(!isNull(id_efectivo) && !isNull(nombre_completo)) ~> filter1",
+				"filter1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          id_efectivo as integer,",
