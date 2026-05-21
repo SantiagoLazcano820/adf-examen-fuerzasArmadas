@@ -119,7 +119,7 @@
 				"          nombre_completo,",
 				"          ci,",
 				"          fecha_nacimiento,",
-				"          genero = ci,",
+				"          genero,",
 				"          departamento_origen,",
 				"          fecha_ingreso,",
 				"          estado,",

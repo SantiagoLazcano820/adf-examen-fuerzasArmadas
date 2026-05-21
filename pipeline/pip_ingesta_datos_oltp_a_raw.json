@@ -1,5 +1,5 @@
 {
-	"name": "pipeline_ingesta_oltp_a_raw",
+	"name": "pip_ingesta_datos_oltp_a_raw",
 	"properties": {
 		"activities": [
 			{
